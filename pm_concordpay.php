@@ -4,8 +4,15 @@
 defined('_JEXEC') or die('Restricted access');
 
 /**
- * Class pm_concordpay
- * @since 3.0.0
+ * @package     JoomShopping
+ * @subpackage  Plugins - ConcordPay
+ * @package     JoomShopping
+ * @subpackage  Payment
+ * @author      ConcordPay
+ * @link        https://concordpay.concord.ua
+ * @copyright   2021 ConcordPay
+ * @license     GNU/GPLv3 http://www.gnu.org/licenses/gpl-3.0.html
+ * @since       3.0
  */
 class pm_concordpay extends PaymentRoot
 {
@@ -57,7 +64,7 @@ class pm_concordpay extends PaymentRoot
     {
         $lang      = JFactory::getLanguage();
         $lang_tag  = ($lang !== null ? $lang->getTag() : 'en-GB');
-        $lang_dir  = JPATH_ROOT . '/components/com_jshopping/payments/pm_concordpay/lang/';
+        $lang_dir  = JPATH_ROOT . '/components/com_jshopping/payments/pm_concordpay/language/';
         $lang_file = $lang_dir . $lang_tag . '.php';
         if (file_exists($lang_file)) {
             require_once $lang_file;
@@ -74,24 +81,19 @@ class pm_concordpay extends PaymentRoot
     /**
      * This method is responsible for the plugin settings in the administrative section.
      *
-     * @param $params
+     * @param array $params
      * @since 3.0.0
      */
     public function showAdminFormParams($params)
     {
-        $module_params_array = array(
-            'concordpay_merchant_id'    => '',
-            'concordpay_secret_key'     => '',
-            'transaction_end_status'    => '',
-            'transaction_failed_status' => ''
-        );
-
-        foreach ($module_params_array as $module_param => $value) {
-            if (!isset($params[$module_param])) {
-                $params[$module_param] = $value;
-            }
+        if (empty($params)) {
+            $params = [
+                'concordpay_merchant_id'    => '',
+                'concordpay_secret_key'     => '',
+                'transaction_end_status'    => '',
+                'transaction_failed_status' => ''
+            ];
         }
-
         $orders = JModelLegacy::getInstance('orders', 'JshoppingModel');
         $this->loadLanguageFile();
         include __DIR__ . '/adminparamsform.php';
@@ -128,7 +130,12 @@ class pm_concordpay extends PaymentRoot
             'approve_url'  => $success_url,
             'decline_url'  => $fail_url,
             'cancel_url'   => $fail_url,
-            'callback_url' => $result_url
+            'callback_url' => $result_url,
+            // Statistics.
+            'client_last_name'  => $order->l_name ?? '',
+            'client_first_name' => $order->f_name ?? '',
+            'email'             => $order->email ?? '',
+            'phone'             => $order->phone ?? ''
         );
 
         $concordpay_args['signature'] = $this->getSignature($concordpay_args, $this->keysForSignature, $pmconfigs['concordpay_secret_key']); ?>

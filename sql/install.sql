@@ -9,9 +9,10 @@ INSERT INTO `#__jshopping_payment_method` (
 	`tax_id`, 
 	`show_descr_in_email`, 
 	`name_en-GB`,
-	`name_de-DE`
+	`name_de-DE`,
+	`name_ru-RU`
 	) VALUES (
-	'Concorpday',
+	'Concordpay',
 	'pm_concordpay',
 	0, 
 	0, 
@@ -20,6 +21,7 @@ INSERT INTO `#__jshopping_payment_method` (
 	1, 
 	-1, 
 	0, 
-	'Concordpay',
-	'Concordpay'
+	'ConcordPay',
+	'ConcordPay',
+	'ConcordPay'
 );
