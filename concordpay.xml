@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <extension version="3.0" type="plugin" group="joomshopping" method="upgrade">
-    <name>JoomShopping - ConcordPay</name>
-    <creationDate>2021-08-18</creationDate>
+    <name>JoomShopping - ConcordPay Payment Gateway</name>
+    <creationDate>2021-08-25</creationDate>
     <author>ConcordPay</author>
     <authorUrl>https://concordpay.concord.ua</authorUrl>
     <copyright>ConcordPay</copyright>
     <license>GNU/GPLv3 https://www.gnu.org/licenses/gpl-3.0.html</license>
-    <version>1.2</version>
+    <version>1.2.1</version>
     <description>JoomShopping ConcordPay payment plugin</description>
 
     <scriptfile>script.php</scriptfile>
@@ -22,8 +22,7 @@
     </files>
 
     <updateservers>
-        <!-- Note: No spaces or linebreaks allowed between the server tags -->
         <server type="extension" name="JoomShopping plg_joomshopping_concordpay Update Site">
-            <![CDATA[https://virtuemart.net/releases/vm3/plg_joomshopping_concordpay_update.xml]]></server>
+            <![CDATA[https://raw.githubusercontent.com/webdevconcord/joomla-joomshopping/master/update.xml]]></server>
     </updateservers>
 </extension>
