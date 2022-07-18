@@ -12,21 +12,32 @@
  */
 // Protection against direct access
 defined('_JEXEC') or die();
-define('ADMIN_CFG_CONCORDPAY_MERCHANT_ID', 'Merchant ID');
-define('ADMIN_CFG_CONCORDPAY_MERCHANT_ID_DESCRIPTION', "Unique ID of the store in ConcordPay system");
-define('ADMIN_CFG_CONCORDPAY_SECRET_KEY', 'Secret key');
-define('ADMIN_CFG_CONCORDPAY_SECRET_KEY_DESCRIPTION', 'Custom character set is used to sign messages are forwarded.');
-define('ADMIN_CFG_CONCORDPAY_PAYMODE', 'Payment method');
-define('ADMIN_CFG_CONCORDPAY_TRANSACTION_REFUNDED', 'Order status for refunded payment');
 
-define('CONCORDPAY_UNKNOWN_ERROR', 'An error has occurred during payment. Please contact us to ensure your order has submitted.');
-define('CONCORDPAY_MERCHANT_DATA_ERROR', 'An error has occurred during payment. Merchant data is incorrect.');
-define('CONCORDPAY_ORDER_DECLINED', 'Thank you for shopping with us. However, the transaction has been declined.');
-define('CONCORDPAY_SIGNATURE_ERROR', 'An error has occurred during payment. Signature is not valid.');
-define('CONCORDPAY_REDIRECT_PENDING_STATUS_ERROR', 'An error during payment.');
+const CPAY_SETTINGS = 'ConcordPay Settings';
+const CPAY_MERCHANT_ID = 'Merchant ID';
+const CPAY_MERCHANT_ID_DESC = "Merchant ID in ConcordPay system";
+const CPAY_SECRET_KEY = 'Secret key';
+const CPAY_SECRET_KEY_DESC = 'Secret merchant\'s key in ConcordPay system';
+const CPAY_PAYMODE = 'Payment method';
+const CPAY_ORDER_STATUS_END = "Order status successful payment";
+const CPAY_ORDER_STATUS_END_DESC = "Order status for successful payment";
+const CPAY_ORDER_STATUS_FAILED = "Order status failed payment";
+const CPAY_ORDER_STATUS_FAILED_DESC = "Order status for failed payment";
+const CPAY_ORDER_STATUS_REFUNDED = "Order status refunded payment";
+const CPAY_ORDER_STATUS_REFUNDED_DESC = "Order status for refunded payment";
+const CPAY_LANGUAGE = "Language";
+const CPAY_LANGUAGE_DESC = "Payment page language";
 
-define('CONCORDPAY_ORDER_APPROVED', 'Concordpay payment successful. ConcordPay ID:');
-define('CONCORDPAY_PAYMENT_REFUNDED', 'Concordpay payment refunded successful. ConcordPay ID:');
+const CPAY_ERROR_UNKNOWN = 'An error has occurred during payment. Please contact us to ensure your order has submitted.';
+const CPAY_ERROR_MERCHANT = 'An error has occurred during payment. Merchant data is incorrect.';
+const CPAY_ORDER_DECLINED = 'Thank you for shopping with us. However, the transaction has been declined.';
+const CPAY_ERROR_SIGNATURE = 'An error has occurred during payment. Signature is not valid.';
+const CPAY_ERROR_REDIRECT_PENDING_STATUS = 'An error during payment.';
+const CPAY_ERROR_OPERATION_TYPE = "Unknown operation type";
 
-define('CONCORDPAY_PAY', 'Pay');
-define('CONCORDPAY_ORDER_DESCRIPTION', 'Payment by card on the site');
+const CPAY_ORDER_APPROVED = 'Concordpay payment successful. ConcordPay ID:';
+const CPAY_PAYMENT_REFUNDED = 'Concordpay payment refunded successful. ConcordPay ID:';
+
+const CPAY_PAY = 'Pay';
+const CPAY_ORDER_DESC = 'Payment by card on the site';
+const CPAY_REDIRECT_TO_PAYMENT_PAGE = 'Redirect to payment page';

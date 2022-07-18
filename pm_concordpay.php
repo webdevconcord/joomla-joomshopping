@@ -1,7 +1,9 @@
 <?php
 
-// Protection against direct access
+// Protection against direct access.
 defined('_JEXEC') or die('Restricted access');
+
+require_once __DIR__ . '/ConcordPayApi.php';
 
 /**
  * @package     JoomShopping
@@ -39,33 +41,40 @@ class pm_concordpay extends PaymentRoot
         'description'
     );
 
-    const VERSION        = '1.0';
-    const ORDER_APPROVED = 'Approved';
-    const ORDER_DECLINED = 'Declined';
+    /**
+     * Payment page languages.
+     *
+     * @var string[]
+     * @since 3.0.0
+     */
+    protected $languages = array(
+        'ua' => 'UA',
+        'ru' => 'RU',
+        'en' => 'EN'
+    );
 
-    const RESPONSE_TYPE_PAYMENT = 'payment';
-    const RESPONSE_TYPE_REVERSE = 'reverse';
-
-    const SIGNATURE_SEPARATOR = ';';
-    const ORDER_SEPARATOR     = "#";
+    const VERSION = '2.0';
 
     // From: components/com_jshopping/payments/payment.php
-    const CONCORDPAY_STATUS_ERROR    = 0;
-    const CONCORDPAY_STATUS_PAID     = 1;
-    const CONCORDPAY_STATUS_REFUNDED = 7;
-
-    const URL = 'https://pay.concord.ua/api/';
+    const CPAY_STATUS_ERROR    = 0;
+    const CPAY_STATUS_PAID     = 1;
+    const CPAY_STATUS_REFUNDED = 7;
 
     /**
      * Load translations files
+     *
+     * @throws Exception
+     *
      * @since 3.0.0
      */
     public function loadLanguageFile()
     {
-        $lang      = JFactory::getLanguage();
+        $app  = \JFactory::getApplication() or die();
+        $lang = $app->getLanguage();
+
         $lang_tag  = ($lang !== null ? $lang->getTag() : 'en-GB');
         $lang_dir  = JPATH_ROOT . '/components/com_jshopping/payments/pm_concordpay/language/';
-        $lang_file = $lang_dir . $lang_tag . '.php';
+        $lang_file = "{$lang_dir}/{$lang_tag}.php";
         if (file_exists($lang_file)) {
             require_once $lang_file;
         } else {
@@ -73,30 +82,44 @@ class pm_concordpay extends PaymentRoot
         }
     }
 
+    /**
+     * Shows payment form.
+     *
+     * @param $params
+     * @param $pmconfigs
+     *
+     * @since 3.0.0
+     */
     public function showPaymentForm($params, $pmconfigs)
     {
-        include(__DIR__ . "/paymentform.php");
     }
 
     /**
      * This method is responsible for the plugin settings in the administrative section.
      *
      * @param array $params
+     *
+     * @throws Exception
+     *
      * @since 3.0.0
      */
     public function showAdminFormParams($params)
     {
         if (empty($params)) {
+            // Default ConcordPay settings.
             $params = [
-                'concordpay_merchant_id'    => '',
-                'concordpay_secret_key'     => '',
-                'transaction_end_status'    => '',
-                'transaction_failed_status' => ''
+                'concordpay_merchant_id'      => '',
+                'concordpay_secret_key'       => '',
+                'transaction_end_status'      => self::CPAY_STATUS_PAID,
+                'transaction_failed_status'   => self::CPAY_STATUS_ERROR,
+                'transaction_refunded_status' => self::CPAY_STATUS_REFUNDED,
+                'concordpay_language'         => 'ua',
             ];
         }
         $orders = JModelLegacy::getInstance('orders', 'JshoppingModel');
         $this->loadLanguageFile();
-        include __DIR__ . '/adminparamsform.php';
+
+        require_once __DIR__ . '/adminparamsform.php';
     }
 
     /**
@@ -104,17 +127,25 @@ class pm_concordpay extends PaymentRoot
      *
      * @param $pmconfigs
      * @param $order
+     *
+     * @throws Exception
+     *
      * @since 3.0.0
      */
     public function showEndForm($pmconfigs, $order)
     {
         $this->loadLanguageFile();
 
-        $order_id    = $order->order_id;
-        $description = CONCORDPAY_ORDER_DESCRIPTION . ' ' . $_SERVER["HTTP_HOST"] . ', '
-            . $order->f_name  . ' ' . $order->l_name . ', ' . $order->phone;
+        $client_first_name = $order->f_name ?? '';
+        $client_last_name  = $order->l_name ?? '';
+        $email = $order->email ?? '';
+        $phone = $order->phone ?? '';
 
-        $base_url    = JURI::root() . 'index.php?option=com_jshopping&controller=checkout&task=step7&js_paymentclass=' . __CLASS__ . '&order_id=' . $order_id;
+        $order_id    = $order->order_id;
+        $description = CPAY_ORDER_DESC . ' ' . $_SERVER["HTTP_HOST"] . ", $client_first_name $client_last_name, $phone";
+
+        $base_url    = JURI::root() . 'index.php?option=com_jshopping&controller=checkout&task=step7'
+            . '&js_paymentclass=' . __CLASS__ . "&order_id={$order_id}";
         $success_url = $base_url . '&act=finish';
         $fail_url    = $base_url . '&act=cancel';
         $result_url  = $base_url . '&act=notify&nolang=1';
@@ -123,7 +154,7 @@ class pm_concordpay extends PaymentRoot
             'operation'    => 'Purchase',
             'merchant_id'  => $pmconfigs['concordpay_merchant_id'],
             'amount'       => $this->fixOrderTotal($order),
-            'order_id'     => $order_id . self::ORDER_SEPARATOR . time(),
+            'order_id'     => $order_id . ConcordPayApi::ORDER_SEPARATOR . time(),
             'currency_iso' => $order->currency_code_iso,
             'description'  => $description,
             'add_params'   => [],
@@ -131,34 +162,18 @@ class pm_concordpay extends PaymentRoot
             'decline_url'  => $fail_url,
             'cancel_url'   => $fail_url,
             'callback_url' => $result_url,
+            'language'     => $pmconfigs['concordpay_language'],
             // Statistics.
-            'client_last_name'  => $order->l_name ?? '',
-            'client_first_name' => $order->f_name ?? '',
-            'email'             => $order->email ?? '',
-            'phone'             => $order->phone ?? ''
+            'client_last_name'  => $client_last_name,
+            'client_first_name' => $client_first_name,
+            'email'             => $email,
+            'phone'             => $phone
         );
 
-        $concordpay_args['signature'] = $this->getSignature($concordpay_args, $this->keysForSignature, $pmconfigs['concordpay_secret_key']); ?>
-        <html>
-        <head>
-            <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
-        </head>
-        <body>
-        <form id="paymentform" action="<?php print pm_concordpay::URL; ?>" name="paymentform" method="post">
-            <?php
-            foreach ($concordpay_args as $key => $value) :
-                ?>
-                <input type="hidden" name="<?php echo $key; ?>" value="<?php echo $value; ?>">
-            <?php
-            endforeach; ?>
-        </form>
-        <?php print _JSHOP_REDIRECT_TO_PAYMENT_PAGE ?>
-        <br>
-        <script type="text/javascript">document.getElementById('paymentform').submit();</script>
-        </body>
-        </html>
-        <?php die(); ?>
-        <?php
+        $concordpay = $this->getConcordpay($pmconfigs['concordpay_secret_key']);
+        $concordpay_args['signature'] = $concordpay->getRequestSignature($concordpay_args);
+
+        require_once __DIR__ . '/paymentform.php';
     }
 
     /**
@@ -184,9 +199,7 @@ class pm_concordpay extends PaymentRoot
             }
         }
 
-        $paymentInfo = $this->isPaymentValid($callback, $pmconfig, $order);
-
-        return $paymentInfo;
+        return $this->isPaymentValid($callback, $pmconfig, $order);
     }
 
     /**
@@ -212,60 +225,70 @@ class pm_concordpay extends PaymentRoot
             }
         }
 
-        $hash = implode(self::SIGNATURE_SEPARATOR, $hash);
+        $hash = implode(ConcordPayApi::SIGNATURE_SEPARATOR, $hash);
 
         return hash_hmac('md5', $hash, $secret_key);
     }
 
     /**
-     * Payment responce validation
+     * Payment response validation.
      *
      * @param $response
      * @param $pmconfig
      * @param $order
+     *
      * @return array
+     *
      * @throws Exception
      * @since 3.0.0
      */
     public function isPaymentValid($response, $pmconfig, $order)
     {
-        list($orderId, ) = explode(self::ORDER_SEPARATOR, $response['orderReference']);
-        if ($orderId !== $order->order_id || !isset($response['transactionId'])) {
-            throw new Exception(CONCORDPAY_UNKNOWN_ERROR);
+        list($orderId, ) = explode(ConcordPayApi::ORDER_SEPARATOR, $response['orderReference']);
+        if ((int)$orderId !== (int)$order->order_id || !isset($response['transactionId'])) {
+            throw new \RuntimeException(CPAY_ERROR_UNKNOWN);
         }
 
         $response['orderReference'] = $orderId;
+        // Check merchant.
         if ($pmconfig['concordpay_merchant_id'] !== $response['merchantAccount']) {
-            throw new Exception(CONCORDPAY_MERCHANT_DATA_ERROR);
+            throw new \RuntimeException(CPAY_ERROR_MERCHANT);
         }
 
-        $verificationSignature = $this->getSignature($response, $this->keysForResponseSignature, $pmconfig['concordpay_secret_key']);
-        if ($verificationSignature !== $response['merchantSignature']) {
-            throw new Exception(CONCORDPAY_SIGNATURE_ERROR);
+        // Check signature.
+        $concordpay = $this->getConcordpay($pmconfig['concordpay_secret_key']);
+        $signature = $concordpay->getResponseSignature($response);
+        if ($signature !== $response['merchantSignature']) {
+            throw new \RuntimeException(CPAY_ERROR_SIGNATURE);
         }
 
-        if ($response['transactionStatus'] === self::ORDER_APPROVED && isset($response['type'])) {
+        // Check operation type.
+        if (!isset($response['type']) || !in_array($response['type'], ConcordPayApi::getAllowedOperationTypes(), true)) {
+            throw new \RuntimeException(CPAY_ERROR_OPERATION_TYPE);
+        }
+
+        if ($response['transactionStatus'] === ConcordPayApi::TRANSACTION_STATUS_APPROVED) {
             $app = JFactory::getApplication();
             if ($app === null) {
-                throw new Exception(CONCORDPAY_UNKNOWN_ERROR);
+                throw new \RuntimeException(CPAY_ERROR_UNKNOWN);
             }
 
-            if (self::RESPONSE_TYPE_REVERSE === $response['type']) {
-                // Refunded payment callback.
-                $app->enqueueMessage(CONCORDPAY_PAYMENT_REFUNDED . $response['transactionId']);
-                return array(self::CONCORDPAY_STATUS_REFUNDED, CONCORDPAY_ORDER_APPROVED . $response['transactionId']);
+            // Refunded payment callback.
+            if (ConcordPayApi::RESPONSE_TYPE_REVERSE === $response['type']) {
+                $app->enqueueMessage(CPAY_PAYMENT_REFUNDED . $response['transactionId']);
+                return array(self::CPAY_STATUS_REFUNDED, CPAY_ORDER_APPROVED . $response['transactionId']);
             }
 
-            if (self::RESPONSE_TYPE_PAYMENT === $response['type']) {
-                // Purchase callback.
-                $app->enqueueMessage(CONCORDPAY_ORDER_APPROVED . $response['transactionId']);
-                return array(self::CONCORDPAY_STATUS_PAID, CONCORDPAY_ORDER_APPROVED . $response['transactionId']);
+            // Purchase callback.
+            if (ConcordPayApi::RESPONSE_TYPE_PAYMENT === $response['type']) {
+                $app->enqueueMessage(CPAY_ORDER_APPROVED . $response['transactionId']);
+                return array(self::CPAY_STATUS_PAID, CPAY_ORDER_APPROVED . $response['transactionId']);
             }
 
-            throw new Exception(CONCORDPAY_UNKNOWN_ERROR);
+            throw new \RuntimeException(CPAY_ERROR_UNKNOWN);
         }
 
-        if ($response['transactionStatus'] === self::ORDER_DECLINED
+        if ($response['transactionStatus'] === ConcordPayApi::TRANSACTION_STATUS_DECLINED
             && isset($response['reasonCode'])
             && !empty($response['reasonCode'])
         ) {
@@ -273,10 +296,10 @@ class pm_concordpay extends PaymentRoot
             if (isset($response['reason']) && !empty($response['reason'])) {
                 $error += $response['reason'];
             }
-            return array(self::CONCORDPAY_STATUS_ERROR, $error);
+            return array(self::CPAY_STATUS_ERROR, $error);
         }
 
-        throw new Exception(CONCORDPAY_ORDER_DECLINED);
+        throw new \RuntimeException(CPAY_ORDER_DECLINED);
     }
 
     /**
@@ -311,6 +334,30 @@ class pm_concordpay extends PaymentRoot
     {
         return number_format($order->order_total, 2, '.', '');
     }
-}
 
-?>
+    /**
+     * Returns ConcordPay API.
+     *
+     * @param $secretKey
+     *
+     * @return ConcordPayApi
+     *
+     * @since version
+     */
+    protected function getConcordpay($secretKey)
+    {
+      return new ConcordPayApi($secretKey);
+    }
+
+    /**
+     * Payment page languages getter.
+     *
+     * @return string[]
+     *
+     * @since version
+     */
+    public function getPaymentPageLanguages()
+    {
+      return $this->languages;
+    }
+}

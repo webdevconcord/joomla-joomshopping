@@ -23,11 +23,15 @@ class plgJoomshoppingConcordpayInstallerScript
 {
     /**
      * @var string
+     * @since 3.0.0
      */
     protected $installPath;
 
     /**
+     * Plugin files list.
+     *
      * @var string[]
+     * @since 3.0.0
      */
     protected $files = [
         'adminparamsform.php',
@@ -35,10 +39,11 @@ class plgJoomshoppingConcordpayInstallerScript
         'index.html',
         'paymentform.php',
         'pm_concordpay.php',
+        'ConcordPayApi.php',
         'language' => [
             'en-GB.php',
             'ru-RU.php',
-            'uk-UK.php',
+            'uk-UA.php',
         ]
     ];
 
@@ -87,6 +92,8 @@ class plgJoomshoppingConcordpayInstallerScript
      * @param InstallerAdapter $adapter The object responsible for running this script
      *
      * @return  boolean  True on success
+     *
+     * @throws Exception
      * @since 3.6
      */
     public function install(InstallerAdapter $adapter)
@@ -112,7 +119,7 @@ class plgJoomshoppingConcordpayInstallerScript
         }
 
         // Checking for the existence of a payment method.
-        $db = JFactory::getDBO();
+        $db = JFactory::getDBO() or exit('Database connection error');
         $query = $db->getQuery(true);
         $query->select($db->quoteName('payment_code'))
             ->from($db->quoteName('#__jshopping_payment_method'))
@@ -126,18 +133,23 @@ class plgJoomshoppingConcordpayInstallerScript
         }
 
         // Add new payment method in database.
-        $extractdir = JPATH_PLUGINS . '/joomshopping/concordpay/sql';
-        if (file_exists($extractdir . '/install.sql')) {
-            $lines = file($extractdir . '/install.sql');
+        $app = JFactory::getApplication() or exit();
+        $sqlInstall = JPATH_PLUGINS . '/joomshopping/concordpay/sql/install.sql';
+        if (file_exists($sqlInstall)) {
+            $lines = file($sqlInstall);
             $fullline = implode(' ', $lines);
-            $queryes = $db->splitSql($fullline);
-            foreach ($queryes as $query) {
+            $queries = $db::splitSql($fullline);
+            foreach ($queries as $query) {
                 if (trim($query) !== '') {
-                    $db->setQuery($query);
-                    $db->query();
-                    if ($db->getErrorNum()) {
-                        JFactory::getApplication()->enqueueMessage($db->stderr());
-                        saveToLog("install.log", "Update - " . $db->stderr());
+                    try
+                    {
+                        $db->setQuery($query);
+                        $db->execute();
+                        //$result = $db->loadObjectList();
+                    }
+                    catch (Exception $e)
+                    {
+                        $app->enqueueMessage(JText::_($e->getMessage()), 'error');
                     }
                 }
             }
@@ -178,7 +190,10 @@ class plgJoomshoppingConcordpayInstallerScript
     }
 
     /**
+     * Make directory method.
+     *
      * @param $path
+     * @since 3.0.0
      */
     public static function makeDir($path)
     {
@@ -191,7 +206,12 @@ class plgJoomshoppingConcordpayInstallerScript
     }
 
     /**
+     * Delete non-empty directory method.
+     *
      * @param $dirPath
+     * @return bool
+     *
+     * @since 3.0.0
      */
     public static function deleteDir($dirPath)
     {

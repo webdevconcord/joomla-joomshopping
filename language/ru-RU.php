@@ -12,21 +12,32 @@
  */
 // Protection against direct access
 defined('_JEXEC') or die();
-define('ADMIN_CFG_CONCORDPAY_MERCHANT_ID', 'Идентификатор продавца');
-define('ADMIN_CFG_CONCORDPAY_MERCHANT_ID_DESCRIPTION', "Уникальный ID продавца в системе ConcordPay");
-define('ADMIN_CFG_CONCORDPAY_SECRET_KEY', 'Секретный ключ');
-define('ADMIN_CFG_CONCORDPAY_SECRET_KEY_DESCRIPTION', 'Секретный ключ продавца в системе ConcordPay');
-define('ADMIN_CFG_CONCORDPAY_PAYMODE', 'Платёжный метод');
-define('ADMIN_CFG_CONCORDPAY_TRANSACTION_REFUNDED', 'Статус заказа для возвращённого платежа');
 
-define('CONCORDPAY_UNKNOWN_ERROR', 'Произошла ошибка при оплате. Свяжитесь с нами, чтобы убедиться, что ваш заказ отправлен.');
-define('CONCORDPAY_MERCHANT_DATA_ERROR', 'Произошла ошибка при оплате. Данные продавца неверны.');
-define('CONCORDPAY_ORDER_DECLINED', 'Спасибо за покупку. Однако транзакция была отклонена.');
-define('CONCORDPAY_SIGNATURE_ERROR', 'Произошла ошибка при оплате. Подпись недействительна.');
-define('CONCORDPAY_REDIRECT_PENDING_STATUS_ERROR', 'Ошибка при оплате.');
+const CPAY_SETTINGS = 'Настройки ConcordPay';
+const CPAY_MERCHANT_ID = 'Идентификатор торговца';
+const CPAY_MERCHANT_ID_DESC = "Идентификатор торговца в системе ConcordPay";
+const CPAY_SECRET_KEY = 'Секретный ключ';
+const CPAY_SECRET_KEY_DESC = 'Секретный ключ торговца в системе ConcordPay';
+const CPAY_PAYMODE = 'Платёжный метод';
+const CPAY_ORDER_STATUS_END = "Статус заказа успешного платежа";
+const CPAY_ORDER_STATUS_END_DESC = "Статус заказа для успешного платежа";
+const CPAY_ORDER_STATUS_FAILED = "Статус заказа неуспешного платежа";
+const CPAY_ORDER_STATUS_FAILED_DESC = "Статус заказа для неуспешного платежа";
+const CPAY_ORDER_STATUS_REFUNDED = "Статус заказа возвращённого платежа";
+const CPAY_ORDER_STATUS_REFUNDED_DESC = "Order status for refunded payment";
+const CPAY_LANGUAGE = "Язык";
+const CPAY_LANGUAGE_DESC = "Язык страницы оплаты";
 
-define('CONCORDPAY_ORDER_APPROVED', 'Платеж прошел успешно. ID ConcordPay:');
-define('CONCORDPAY_PAYMENT_REFUNDED', 'Платеж успешно возвращён. ID ConcordPay:');
+const CPAY_ERROR_UNKNOWN = 'Произошла ошибка при оплате. Свяжитесь с нами, чтобы убедиться, что ваш заказ отправлен.';
+const CPAY_ERROR_MERCHANT = 'Произошла ошибка при оплате. Данные продавца неверны.';
+const CPAY_ORDER_DECLINED = 'Спасибо за покупку. Однако транзакция была отклонена.';
+const CPAY_ERROR_SIGNATURE = 'Произошла ошибка при оплате. Подпись недействительна.';
+const CPAY_ERROR_REDIRECT_PENDING_STATUS = 'Ошибка при оплате.';
+const CPAY_ERROR_OPERATION_TYPE = "Неизвестный тип операции";
 
-define('CONCORDPAY_PAY', 'Оплатить');
-define('CONCORDPAY_ORDER_DESCRIPTION', 'Оплата картой на сайте');
+const CPAY_ORDER_APPROVED = 'Платеж прошел успешно. ID ConcordPay:';
+const CPAY_PAYMENT_REFUNDED = 'Платеж успешно возвращён. ID ConcordPay:';
+
+const CPAY_PAY = 'Оплатить';
+const CPAY_ORDER_DESC = 'Оплата картой на сайте';
+const CPAY_REDIRECT_TO_PAYMENT_PAGE = 'Перенаправление на страницу оплаты';

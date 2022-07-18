@@ -12,10 +12,23 @@
  */
 // Protection against direct access
 defined('_JEXEC') or die('Restricted access');
+/** @var $concordpay_args array */
 ?>
 
-<script type="text/javascript">
-    function check_pm_concordpay(){
-        document.querySelector('#payment_form').submit();
-    }
-</script>
+  <html lang="<?php echo $concordpay_args['concordpay_language']?>">
+  <head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <title></title>
+  </head>
+  <body>
+  <form id="paymentform" action="<?php print ConcordPayApi::getApiUrl(); ?>" name="paymentform" method="post">
+      <?php foreach ($concordpay_args as $key => $value) : ?>
+        <input type="hidden" name="<?php echo $key; ?>" value="<?php echo $value; ?>">
+      <?php endforeach; ?>
+  </form>
+  <?php print CPAY_REDIRECT_TO_PAYMENT_PAGE ?>
+  <br>
+  <script type="text/javascript">document.querySelector('#paymentform').submit();</script>
+  </body>
+  </html>
+<?php die(); ?>
