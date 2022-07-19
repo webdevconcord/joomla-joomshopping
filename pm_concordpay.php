@@ -177,6 +177,10 @@ class pm_concordpay extends PaymentRoot
         $this->loadLanguageFile();
         $callback = JFactory::$application->input->post->getArray();
 
+        if ($rescode != 'notify') {
+            return [];
+        }
+
         if (empty($callback)) {
             $fap = json_decode(file_get_contents("php://input"), true);
             foreach ($fap as $key => $val) {
