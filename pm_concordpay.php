@@ -115,7 +115,7 @@ class pm_concordpay extends PaymentRoot
             . $order->f_name  . ' ' . $order->l_name . ', ' . $order->phone;
 
         $base_url    = JURI::root() . 'index.php?option=com_jshopping&controller=checkout&task=step7&js_paymentclass=' . __CLASS__ . '&order_id=' . $order_id;
-        $success_url = $base_url . '&act=finish';
+        $success_url = $base_url . '&act=return';
         $fail_url    = $base_url . '&act=cancel';
         $result_url  = $base_url . '&act=notify&nolang=1';
 
