@@ -238,7 +238,6 @@ class pm_concordpay extends PaymentRoot
             throw new Exception(CONCORDPAY_UNKNOWN_ERROR);
         }
 
-        $response['orderReference'] = $orderId;
         if ($pmconfig['concordpay_merchant_id'] !== $response['merchantAccount']) {
             throw new Exception(CONCORDPAY_MERCHANT_DATA_ERROR);
         }
@@ -248,6 +247,7 @@ class pm_concordpay extends PaymentRoot
             throw new Exception(CONCORDPAY_SIGNATURE_ERROR);
         }
 
+        $response['orderReference'] = $orderId;
         if ($response['transactionStatus'] === self::ORDER_APPROVED && isset($response['type'])) {
             $app = JFactory::getApplication();
             if ($app === null) {

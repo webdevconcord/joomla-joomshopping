@@ -12,6 +12,8 @@
  */
 // Protection against direct access
 defined('_JEXEC') or die();
+/** @var array $params */
+/** @var JshoppingModelOrders $orders */
 ?>
 <div class="col100">
   <fieldset class="adminform">
