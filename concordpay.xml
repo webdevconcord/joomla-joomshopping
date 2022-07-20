@@ -6,7 +6,7 @@
     <authorUrl>https://mustpay.tech</authorUrl>
     <copyright>ConcordPay</copyright>
     <license>GNU/GPLv3 https://www.gnu.org/licenses/gpl-3.0.html</license>
-    <version>2.0.1</version>
+    <version>2.0.2</version>
     <description>JoomShopping ConcordPay payment plugin</description>
 
     <scriptfile>script.php</scriptfile>

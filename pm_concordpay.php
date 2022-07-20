@@ -253,7 +253,6 @@ class pm_concordpay extends PaymentRoot
             throw new \RuntimeException(CPAY_ERROR_UNKNOWN);
         }
 
-        $response['orderReference'] = $orderId;
         // Check merchant.
         if ($pmconfig['concordpay_merchant_id'] !== $response['merchantAccount']) {
             throw new \RuntimeException(CPAY_ERROR_MERCHANT);
@@ -265,6 +264,7 @@ class pm_concordpay extends PaymentRoot
         if ($signature !== $response['merchantSignature']) {
             throw new \RuntimeException(CPAY_ERROR_SIGNATURE);
         }
+        $response['orderReference'] = $orderId;
 
         // Check operation type.
         if (!isset($response['type']) || !in_array($response['type'], ConcordPayApi::getAllowedOperationTypes(), true)) {
