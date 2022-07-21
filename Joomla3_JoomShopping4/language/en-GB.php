@@ -18,6 +18,8 @@ define('ADMIN_CFG_CONCORDPAY_SECRET_KEY', 'Secret key');
 define('ADMIN_CFG_CONCORDPAY_SECRET_KEY_DESCRIPTION', 'Custom character set is used to sign messages are forwarded.');
 define('ADMIN_CFG_CONCORDPAY_PAYMODE', 'Payment method');
 define('ADMIN_CFG_CONCORDPAY_TRANSACTION_REFUNDED', 'Order status for refunded payment');
+define('ADMIN_CFG_CONCORDPAY_RETURN_URL', 'Return URL');
+define('ADMIN_CFG_CONCORDPAY_RETURN_URL_DESCRIPTION', 'Redirect URL after payment');
 
 define('CONCORDPAY_UNKNOWN_ERROR', 'An error has occurred during payment. Please contact us to ensure your order has submitted.');
 define('CONCORDPAY_MERCHANT_DATA_ERROR', 'An error has occurred during payment. Merchant data is incorrect.');
@@ -30,3 +32,8 @@ define('CONCORDPAY_PAYMENT_REFUNDED', 'Concordpay payment refunded successful. C
 
 define('CONCORDPAY_PAY', 'Pay');
 define('CONCORDPAY_ORDER_DESCRIPTION', 'Payment by card on the site');
+
+define('PLG_JOOMSHOPPING_CONCORDPAY_SUCCESS', 'Congratulations! Payment successful.');
+define('PLG_JOOMSHOPPING_CONCORDPAY_FAIL', 'Sorry, there was an error during payment.');
+define('PLG_JOOMSHOPPING_CONCORDPAY_CANCEL', 'The payment was canceled by the user.');
+define('PLG_JOOMSHOPPING_CONCORDPAY_UNKNOWN_ERROR', 'An unknown error occurred during payment.');

@@ -18,6 +18,8 @@ define('ADMIN_CFG_CONCORDPAY_SECRET_KEY', 'Секретний ключ');
 define('ADMIN_CFG_CONCORDPAY_SECRET_KEY_DESCRIPTION', 'Секретний ключ продавця в системі ConcordPay');
 define('ADMIN_CFG_CONCORDPAY_PAYMODE', 'Платіжний метод');
 define('ADMIN_CFG_CONCORDPAY_TRANSACTION_REFUNDED', 'Статус замовлення для повернутого платежу');
+define('ADMIN_CFG_CONCORDPAY_RETURN_URL', 'URL повернення');
+define('ADMIN_CFG_CONCORDPAY_RETURN_URL_DESCRIPTION', 'URL перенаправлення покупця після оплати');
 
 define('CONCORDPAY_UNKNOWN_ERROR', 'Сталася помилка при оплаті. Зв\'яжіться з нами, щоб переконатися, що ваше замовлення відправлене.');
 define('CONCORDPAY_MERCHANT_DATA_ERROR', 'Сталася помилка при оплаті. Дані продавця невірні.');
@@ -30,3 +32,8 @@ define('CONCORDPAY_PAYMENT_REFUNDED', 'Платіж успішно поверн�
 
 define('CONCORDPAY_PAY', 'Оплатити');
 define('CONCORDPAY_ORDER_DESCRIPTION', 'Оплата карткою на сайті');
+
+define('PLG_JOOMSHOPPING_CONCORDPAY_SUCCESS', 'Вітаємо! Оплата успішна.');
+define('PLG_JOOMSHOPPING_CONCORDPAY_FAIL', 'На жаль, під час оплати виникла помилка.');
+define('PLG_JOOMSHOPPING_CONCORDPAY_CANCEL', 'Оплата відхилена користувачем.');
+define('PLG_JOOMSHOPPING_CONCORDPAY_UNKNOWN_ERROR', 'Під час оплати виникла невідома помилка.');

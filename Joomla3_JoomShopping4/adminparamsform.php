@@ -25,8 +25,6 @@ defined('_JEXEC') or die();
         <td>
           <input type="text" name="pm_params[concordpay_merchant_id]" class="inputbox"
                  value="<?= $params['concordpay_merchant_id'] ?>">
-        </td>
-        <td>
             <?= JHtml::tooltip(ADMIN_CFG_CONCORDPAY_MERCHANT_ID_DESCRIPTION) ?>
         </td>
       </tr>
@@ -38,8 +36,6 @@ defined('_JEXEC') or die();
         <td>
           <input type="text" name="pm_params[concordpay_secret_key]" class="inputbox"
                  value="<?= $params['concordpay_secret_key'] ?>">
-        </td>
-        <td>
             <?= JHtml::tooltip(ADMIN_CFG_CONCORDPAY_SECRET_KEY_DESCRIPTION) ?>
         </td>
       </tr>
@@ -65,6 +61,16 @@ defined('_JEXEC') or die();
         </td>
         <td>
             <?php echo JHTML::_('select.genericlist', $orders->getAllOrderStatus(), 'pm_params[transaction_refunded_status]', 'class = "inputbox" size = "1"', 'status_id', 'name', $params['transaction_refunded_status']); ?>
+        </td>
+      </tr>
+      <tr>
+        <td class="key" width="300">
+            <?= ADMIN_CFG_CONCORDPAY_RETURN_URL ?>:
+        </td>
+        <td>
+          <input type="text" name="pm_params[concordpay_return_url]" class="inputbox"
+                 value="<?= $params['concordpay_return_url'] ?>">
+            <?= JHtml::tooltip(ADMIN_CFG_CONCORDPAY_RETURN_URL_DESCRIPTION) ?>
         </td>
       </tr>
     </table>

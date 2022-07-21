@@ -114,10 +114,11 @@ class pm_concordpay extends PaymentRoot
         $description = CONCORDPAY_ORDER_DESCRIPTION . ' ' . $_SERVER["HTTP_HOST"] . ', '
             . $order->f_name  . ' ' . $order->l_name . ', ' . $order->phone;
 
-        $base_url    = JURI::root() . 'index.php?option=com_jshopping&controller=checkout&task=step7&js_paymentclass=' . __CLASS__ . '&order_id=' . $order_id;
-        $success_url = $base_url . '&act=return';
-        $fail_url    = $base_url . '&act=cancel';
-        $result_url  = $base_url . '&act=notify&nolang=1';
+        $base_url     = JURI::root() . 'index.php?option=com_jshopping&controller=checkout&task=step7&js_paymentclass=' . __CLASS__ . '&order_id=' . $order_id;
+        $success_url  = $base_url . '&act=return&result=success';
+        $fail_url     = $base_url . '&act=return&result=fail';
+        $cancel_url   = $base_url . '&act=return&result=cancel';
+        $callback_url = $base_url . '&act=notify&nolang=1';
 
         $concordpay_args = array(
             'operation'    => 'Purchase',
@@ -129,8 +130,8 @@ class pm_concordpay extends PaymentRoot
             'add_params'   => [],
             'approve_url'  => $success_url,
             'decline_url'  => $fail_url,
-            'cancel_url'   => $fail_url,
-            'callback_url' => $result_url,
+            'cancel_url'   => $cancel_url,
+            'callback_url' => $callback_url,
             // Statistics.
             'client_last_name'  => $order->l_name ?? '',
             'client_first_name' => $order->f_name ?? '',
@@ -176,8 +177,40 @@ class pm_concordpay extends PaymentRoot
     {
         $this->loadLanguageFile();
         $callback = JFactory::$application->input->post->getArray();
+        $getParams = JFactory::$application->input->get->getArray();
 
         if ($rescode != 'notify') {
+            $app = JFactory::getApplication() or die();
+            $values = new stdClass();
+
+            // Return URL handle.
+            if (isset($getParams['result'])) {
+                switch (strtolower($getParams['result'])) {
+                    case 'success':
+                        $values->msg = JText::_(PLG_JOOMSHOPPING_CONCORDPAY_SUCCESS);
+                        $values->type = 'success';
+                        break;
+                    case 'fail':
+                        $values->msg = JText::_(PLG_JOOMSHOPPING_CONCORDPAY_FAIL);
+                        $values->type = 'error';
+                        break;
+                    case 'cancel':
+                        $values->msg = JText::_(PLG_JOOMSHOPPING_CONCORDPAY_CANCEL);
+                        $values->type = 'warning';
+                        break;
+                    default:
+                        $values->msg = JText::_(PLG_JOOMSHOPPING_CONCORDPAY_UNKNOWN_ERROR);
+                        $values->type = 'error';
+                }
+
+                $app->enqueueMessage($values->msg, $values->type);
+                if (trim($pmconfig['concordpay_return_url']) == '') {
+                    $redirect_url = JRoute::_(JUri::base() . "index.php", false);
+                } else {
+                    $redirect_url = $pmconfig['concordpay_return_url'];
+                }
+                $app->redirect($redirect_url);
+            }
             return [];
         }
 
@@ -187,7 +220,6 @@ class pm_concordpay extends PaymentRoot
                 $callback[$key] = $val;
             }
         }
-
         $paymentInfo = $this->isPaymentValid($callback, $pmconfig, $order);
 
         return $paymentInfo;
@@ -238,7 +270,7 @@ class pm_concordpay extends PaymentRoot
             throw new Exception(CONCORDPAY_UNKNOWN_ERROR);
         }
 
-        if ($pmconfig['concordpay_merchant_id'] !== $response['merchantAccount']) {
+       if ($pmconfig['concordpay_merchant_id'] !== $response['merchantAccount']) {
             throw new Exception(CONCORDPAY_MERCHANT_DATA_ERROR);
         }
 
