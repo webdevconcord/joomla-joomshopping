@@ -18,8 +18,12 @@ define('ADMIN_CFG_CONCORDPAY_SECRET_KEY', 'Secret key');
 define('ADMIN_CFG_CONCORDPAY_SECRET_KEY_DESCRIPTION', 'Custom character set is used to sign messages are forwarded.');
 define('ADMIN_CFG_CONCORDPAY_PAYMODE', 'Payment method');
 define('ADMIN_CFG_CONCORDPAY_TRANSACTION_REFUNDED', 'Order status for refunded payment');
-define('ADMIN_CFG_CONCORDPAY_RETURN_URL', 'Return URL');
-define('ADMIN_CFG_CONCORDPAY_RETURN_URL_DESCRIPTION', 'Redirect URL after payment');
+define('ADMIN_CFG_CONCORDPAY_APPROVE_URL', 'Successful payment redirect URL');
+define('ADMIN_CFG_CONCORDPAY_APPROVE_URL_DESCRIPTION', 'Redirect URL after successful payment');
+define('ADMIN_CFG_CONCORDPAY_DECLINE_URL', 'Failed payment redirect URL');
+define('ADMIN_CFG_CONCORDPAY_DECLINE_URL_DESCRIPTION', 'Redirect URL on payment failure');
+define('ADMIN_CFG_CONCORDPAY_CANCEL_URL', 'Cancel payment redirect URL');
+define('ADMIN_CFG_CONCORDPAY_CANCEL_URL_DESCRIPTION', 'Redirect URL when canceling a payment');
 
 define('CONCORDPAY_UNKNOWN_ERROR', 'An error has occurred during payment. Please contact us to ensure your order has submitted.');
 define('CONCORDPAY_MERCHANT_DATA_ERROR', 'An error has occurred during payment. Merchant data is incorrect.');

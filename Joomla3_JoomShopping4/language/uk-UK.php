@@ -18,8 +18,12 @@ define('ADMIN_CFG_CONCORDPAY_SECRET_KEY', 'Секретний ключ');
 define('ADMIN_CFG_CONCORDPAY_SECRET_KEY_DESCRIPTION', 'Секретний ключ продавця в системі ConcordPay');
 define('ADMIN_CFG_CONCORDPAY_PAYMODE', 'Платіжний метод');
 define('ADMIN_CFG_CONCORDPAY_TRANSACTION_REFUNDED', 'Статус замовлення для повернутого платежу');
-define('ADMIN_CFG_CONCORDPAY_RETURN_URL', 'URL повернення');
-define('ADMIN_CFG_CONCORDPAY_RETURN_URL_DESCRIPTION', 'URL перенаправлення покупця після оплати');
+define('ADMIN_CFG_CONCORDPAY_APPROVE_URL', 'URL перенаправлення успішного платежу');
+define('ADMIN_CFG_CONCORDPAY_APPROVE_URL_DESCRIPTION', 'URL перенаправлення для успішного платежу');
+define('ADMIN_CFG_CONCORDPAY_DECLINE_URL', 'URL перенаправлення неуспішного платежу');
+define('ADMIN_CFG_CONCORDPAY_DECLINE_URL_DESCRIPTION', 'URL перенаправлення для неуспішного платежу');
+define('ADMIN_CFG_CONCORDPAY_CANCEL_URL', 'URL перенаправлення відмови від платежу');
+define('ADMIN_CFG_CONCORDPAY_CANCEL_URL_DESCRIPTION', 'URL перенаправления в разі відмови від платежу');
 
 define('CONCORDPAY_UNKNOWN_ERROR', 'Сталася помилка при оплаті. Зв\'яжіться з нами, щоб переконатися, що ваше замовлення відправлене.');
 define('CONCORDPAY_MERCHANT_DATA_ERROR', 'Сталася помилка при оплаті. Дані продавця невірні.');

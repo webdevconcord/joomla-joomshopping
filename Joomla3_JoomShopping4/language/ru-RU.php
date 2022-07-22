@@ -18,8 +18,12 @@ define('ADMIN_CFG_CONCORDPAY_SECRET_KEY', 'Секретный ключ');
 define('ADMIN_CFG_CONCORDPAY_SECRET_KEY_DESCRIPTION', 'Секретный ключ продавца в системе ConcordPay');
 define('ADMIN_CFG_CONCORDPAY_PAYMODE', 'Платёжный метод');
 define('ADMIN_CFG_CONCORDPAY_TRANSACTION_REFUNDED', 'Статус заказа для возвращённого платежа');
-define('ADMIN_CFG_CONCORDPAY_RETURN_URL', 'URL возврата');
-define('ADMIN_CFG_CONCORDPAY_RETURN_URL_DESCRIPTION', 'URL перенаправления покупателя после оплаты');
+define('ADMIN_CFG_CONCORDPAY_APPROVE_URL', 'URL перенаправления успешного платежа');
+define('ADMIN_CFG_CONCORDPAY_APPROVE_URL_DESCRIPTION', 'URL перенаправления для успешного платежа');
+define('ADMIN_CFG_CONCORDPAY_DECLINE_URL', 'URL перенаправления неуспешного платежа');
+define('ADMIN_CFG_CONCORDPAY_DECLINE_URL_DESCRIPTION', 'URL перенаправления для неуспешного платежа');
+define('ADMIN_CFG_CONCORDPAY_CANCEL_URL', 'URL перенаправления отказа от платежа');
+define('ADMIN_CFG_CONCORDPAY_CANCEL_URL_DESCRIPTION', 'URL перенаправления при отказе от платежа');
 
 define('CONCORDPAY_UNKNOWN_ERROR', 'Произошла ошибка при оплате. Свяжитесь с нами, чтобы убедиться, что ваш заказ отправлен.');
 define('CONCORDPAY_MERCHANT_DATA_ERROR', 'Произошла ошибка при оплате. Данные продавца неверны.');

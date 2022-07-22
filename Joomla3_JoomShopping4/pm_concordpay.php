@@ -189,26 +189,34 @@ class pm_concordpay extends PaymentRoot
                     case 'success':
                         $values->msg = JText::_(PLG_JOOMSHOPPING_CONCORDPAY_SUCCESS);
                         $values->type = 'success';
+
+                        // Clear cart.
+                        $cart = JSFactory::getModel('cart', 'jshop');
+                        $cart->load();
+                        $cart->deleteAll();
+                        $redirect_url = $pmconfig['concordpay_approve_url'];
                         break;
                     case 'fail':
                         $values->msg = JText::_(PLG_JOOMSHOPPING_CONCORDPAY_FAIL);
                         $values->type = 'error';
+                        $redirect_url = $pmconfig['concordpay_decline_url'];
                         break;
                     case 'cancel':
                         $values->msg = JText::_(PLG_JOOMSHOPPING_CONCORDPAY_CANCEL);
                         $values->type = 'warning';
+                        $redirect_url = $pmconfig['concordpay_cancel_url'];
                         break;
                     default:
                         $values->msg = JText::_(PLG_JOOMSHOPPING_CONCORDPAY_UNKNOWN_ERROR);
                         $values->type = 'error';
+                        $redirect_url = $pmconfig['concordpay_decline_url'];
                 }
 
                 $app->enqueueMessage($values->msg, $values->type);
-                if (trim($pmconfig['concordpay_return_url']) == '') {
+                if (trim($redirect_url) == '') {
                     $redirect_url = JRoute::_(JUri::base() . "index.php", false);
-                } else {
-                    $redirect_url = $pmconfig['concordpay_return_url'];
                 }
+
                 $app->redirect($redirect_url);
             }
             return [];

@@ -64,13 +64,33 @@ defined('_JEXEC') or die();
         </td>
       </tr>
       <tr>
-        <td class="key" width="300">
-            <?= ADMIN_CFG_CONCORDPAY_RETURN_URL ?>:
+        <td class="key" style="width:300px">
+            <?= ADMIN_CFG_CONCORDPAY_APPROVE_URL ?>:
         </td>
         <td>
-          <input type="text" name="pm_params[concordpay_return_url]" class="inputbox"
-                 value="<?= $params['concordpay_return_url'] ?>">
-            <?= JHtml::tooltip(ADMIN_CFG_CONCORDPAY_RETURN_URL_DESCRIPTION) ?>
+          <input type="text" name="pm_params[concordpay_approve_url]" class="inputbox"
+                 value="<?= $params['concordpay_approve_url'] ?>">
+            <?= JHtml::tooltip(ADMIN_CFG_CONCORDPAY_APPROVE_URL_DESCRIPTION) ?>
+        </td>
+      </tr>
+      <tr>
+        <td class="key" style="width:300px">
+            <?= ADMIN_CFG_CONCORDPAY_DECLINE_URL ?>:
+        </td>
+        <td>
+          <input type="text" name="pm_params[concordpay_decline_url]" class="inputbox"
+                 value="<?= $params['concordpay_decline_url'] ?>">
+            <?= JHtml::tooltip(ADMIN_CFG_CONCORDPAY_DECLINE_URL_DESCRIPTION) ?>
+        </td>
+      </tr>
+      <tr>
+        <td class="key" style="width:300px">
+            <?= ADMIN_CFG_CONCORDPAY_CANCEL_URL ?>:
+        </td>
+        <td>
+          <input type="text" name="pm_params[concordpay_cancel_url]" class="inputbox"
+                 value="<?= $params['concordpay_cancel_url'] ?>">
+            <?= JHtml::tooltip(ADMIN_CFG_CONCORDPAY_CANCEL_URL_DESCRIPTION) ?>
         </td>
       </tr>
     </table>
