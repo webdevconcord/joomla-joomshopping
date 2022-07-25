@@ -183,6 +183,13 @@ class pm_concordpay extends PaymentRoot
             $app = JFactory::getApplication() or die();
             $values = new stdClass();
 
+            // Get site language.
+            $locale = JFactory::getLanguage();
+            if ($locale) {
+                $language = explode('-', $locale->getTag())[0];
+            } else {
+                $language = 'ua';
+            }
             // Return URL handle.
             if (isset($getParams['result'])) {
                 switch (strtolower($getParams['result'])) {
@@ -194,22 +201,22 @@ class pm_concordpay extends PaymentRoot
                         $cart = JSFactory::getModel('cart', 'jshop');
                         $cart->load();
                         $cart->deleteAll();
-                        $redirect_url = $pmconfig['concordpay_approve_url'];
+                        $redirect_url = $pmconfig["concordpay_approve_url-$language"] ?? '';
                         break;
                     case 'fail':
                         $values->msg = JText::_(PLG_JOOMSHOPPING_CONCORDPAY_FAIL);
                         $values->type = 'error';
-                        $redirect_url = $pmconfig['concordpay_decline_url'];
+                        $redirect_url = $pmconfig["concordpay_decline_url-$language"] ?? '';
                         break;
                     case 'cancel':
                         $values->msg = JText::_(PLG_JOOMSHOPPING_CONCORDPAY_CANCEL);
                         $values->type = 'warning';
-                        $redirect_url = $pmconfig['concordpay_cancel_url'];
+                        $redirect_url = $pmconfig["concordpay_cancel_url-$language"] ?? '';
                         break;
                     default:
                         $values->msg = JText::_(PLG_JOOMSHOPPING_CONCORDPAY_UNKNOWN_ERROR);
                         $values->type = 'error';
-                        $redirect_url = $pmconfig['concordpay_decline_url'];
+                        $redirect_url = $pmconfig["concordpay_decline_url-$language"] ?? '';
                 }
 
                 $app->enqueueMessage($values->msg, $values->type);
@@ -278,7 +285,7 @@ class pm_concordpay extends PaymentRoot
             throw new Exception(CONCORDPAY_UNKNOWN_ERROR);
         }
 
-       if ($pmconfig['concordpay_merchant_id'] !== $response['merchantAccount']) {
+        if ($pmconfig['concordpay_merchant_id'] !== $response['merchantAccount']) {
             throw new Exception(CONCORDPAY_MERCHANT_DATA_ERROR);
         }
 
